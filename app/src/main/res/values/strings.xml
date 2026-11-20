@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Grand Theft India</string>
+    <string name="skip_intro">Skip Intro</string>
+    <string name="menu_new_game">New Game</string>
+    <string name="menu_continue">Continue</string>
+    <string name="menu_no_save">Continue (No Save)</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_exit_game">Exit Game</string>
+    <string name="menu_replay_intro">Replay Intro Cinematic</string>
+    <string name="pause_title">GAME PAUSED</string>
+    <string name="pause_resume">Resume</string>
+    <string name="pause_save">Save Progress</string>
+    <string name="pause_garage">Vehicle Garage</string>
+    <string name="pause_wardrobe">Character Style</string>
+    <string name="pause_main_menu">Main Menu</string>
+</resources>
