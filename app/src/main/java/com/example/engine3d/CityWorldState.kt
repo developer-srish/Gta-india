@@ -622,10 +622,10 @@ class CityWorldSimulation {
         // Gentle golden-dusk progression and lively traffic on menu background
         updateTrafficAndPedestrians(dt)
         updateRain(dt)
-        return
+        return@synchronized
       }
 
-      if (isPaused) return
+      if (isPaused) return@synchronized
 
       // Day/night progression
       timeOfDay = (timeOfDay + dt * 0.08f * settings.dayCycleSpeed) % 24f
