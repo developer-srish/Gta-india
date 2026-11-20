@@ -3,7 +3,8 @@ name: Build Grand Theft India APK
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -11,18 +12,22 @@ permissions:
 
 jobs:
   build-apk:
+    name: Build Android APK
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Download project source
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2. Install Java
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
 
+      # 3. Install Android SDK
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
         with:
@@ -30,25 +35,53 @@ jobs:
           log-accepted-android-sdk-licenses: false
           packages: platform-tools
 
-      - name: Make Gradle executable
-        run: chmod +x ./gradlew
+      # 4. Install Gradle directly
+      - name: Set up Gradle 9.3.1
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.3.1"
 
+      # 5. Check project structure
+      - name: Check Android project
+        run: |
+          echo "Checking project..."
+          ls -la
+          echo "Checking app module..."
+          ls -la app
+
+      # 6. Build APK
       - name: Build Debug APK
-        run: ./gradlew :app:assembleDebug --no-daemon
+        run: |
+          gradle --version
+          gradle :app:assembleDebug --no-daemon
 
-      - name: Upload APK
+      # 7. Verify APK
+      - name: Verify APK
+        run: |
+          APK="app/build/outputs/apk/debug/app-debug.apk"
+          if [ ! -f "$APK" ]; then
+            echo "APK was not generated!"
+            exit 1
+          fi
+          echo "APK successfully generated!"
+          ls -lh "$APK"
+
+      # 8. Upload APK for download
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Grand-Theft-India-APK
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+          retention-days: 30
 
-      - name: Publish APK to GitHub Releases
+      # 9. Publish APK to GitHub Releases
+      - name: Publish APK Release
         uses: softprops/action-gh-release@v2
+        continue-on-error: true
         with:
           tag_name: latest-apk
-          name: Grand Theft India APK
+          name: Grand Theft India - Latest APK
           files: app/build/outputs/apk/debug/app-debug.apk
           make_latest: true
-        continue-on-error: true
-        
+          
